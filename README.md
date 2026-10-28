@@ -1,4 +1,4 @@
-# Check Point 3950 Serial Console for macOS
+# Check Point 3900 Serial Console for macOS
 
 A small Bash utility that automatically detects a USB serial console connected to a Mac and opens a `screen` session at **9600 baud**.
 
