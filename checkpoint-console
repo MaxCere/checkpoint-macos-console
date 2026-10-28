@@ -1,0 +1,47 @@
+#!/bin/bash
+
+BAUD=9600
+
+echo "🔎 Cerco porte seriali USB..."
+
+PORTS=$(ls /dev/cu.* 2>/dev/null | grep -Ei 'usb|serial')
+
+COUNT=$(echo "$PORTS" | grep -c '^/' 2>/dev/null)
+
+if [ "$COUNT" -eq 0 ]; then
+    echo "❌ Nessuna porta seriale USB trovata."
+    echo
+    echo "Porte disponibili:"
+    ls /dev/cu.* 2>/dev/null
+    exit 1
+fi
+
+if [ "$COUNT" -gt 1 ]; then
+    echo "⚠️ Trovate più porte seriali:"
+    echo
+    select PORT in $PORTS; do
+        if [ -n "$PORT" ]; then
+            break
+        fi
+    done
+else
+    PORT="$PORTS"
+fi
+
+echo
+echo "✅ Porta trovata: $PORT"
+echo "🔌 Velocità: $BAUD baud"
+echo
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo " Per uscire da screen:"
+echo
+echo "   1. Premi CTRL-A"
+echo "   2. Premi CTRL-\\"
+echo "   3. Conferma con Y"
+echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+echo
+read -n 1 -s -r -p "Premi un tasto per collegarti al Check Point..."
+echo
+echo
+
+exec screen "$PORT" "$BAUD"
